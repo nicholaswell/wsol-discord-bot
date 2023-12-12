@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const Contestant = require('../../models/Contestant');
+const Eliminated = require('../../models/Eliminated'); // Assuming this is the correct path
+
 const targetChannelId = '1175250077997072410'; // Replace with the actual channel ID
 
 module.exports = {
@@ -18,7 +20,7 @@ module.exports = {
 
             // Create an embed for the leaderboard
             const embed = new EmbedBuilder()
-                .setColor(297994)
+                .setColor([194, 33, 21])
                 .setTitle('Leaderboard')
                 .setDescription('Here are the current standings on the leaderboard:\n\n');
 
@@ -26,6 +28,14 @@ module.exports = {
             contestants.forEach((contestant) => {
                 embed.addFields({ name: contestant.name, value: `$${contestant.money}\n\n` });
             });
+
+            // Fetch eliminated information
+            const eliminatedInfo = await Eliminated.findOne();
+
+            // Add eliminated information to the embed
+            if (eliminatedInfo) {
+                embed.addFields({ name: 'LOOT', value: `Items: ${eliminatedInfo.itemsOwned.join(', ')}\nMoney: $${eliminatedInfo.money}` });
+            }
 
             // Send the embed to the leaderboard channel
             targetChannel.send({ embeds: [embed] });
