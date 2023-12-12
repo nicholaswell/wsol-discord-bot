@@ -1,14 +1,18 @@
 const { EmbedBuilder } = require('discord.js');
-const Contestant = require('../models/Contestant')
+const Contestant = require('../models/Contestant');
+const Eliminated = require('../models/Eliminated');  // Add this import
 
 async function updateLeaderboard(client, targetChannel) {
     try {
         // Fetch all contestants from the database
         const contestants = await Contestant.find();
 
+        // Fetch eliminated information
+        const eliminatedInfo = await Eliminated.findOne();
+
         // Create an embed for the leaderboard
         const embed = new EmbedBuilder()
-            .setColor(297994)
+            .setColor([194, 33, 21])
             .setTitle('Leaderboard')
             .setDescription('Here are the current standings on the leaderboard:\n\n');
 
@@ -16,6 +20,11 @@ async function updateLeaderboard(client, targetChannel) {
         contestants.forEach((contestant) => {
             embed.addFields({ name: contestant.name, value: `$${contestant.money}\n\n` });
         });
+
+        // Add eliminated information to the embed
+        if (eliminatedInfo) {
+            embed.addFields({ name: 'LOOT', value: `Items: ${eliminatedInfo.itemsOwned.join(', ')}\nMoney: $${eliminatedInfo.money}` });
+        }
 
         // Collect the messages in the leaderboard channel
         const messages = await targetChannel.messages.fetch();
