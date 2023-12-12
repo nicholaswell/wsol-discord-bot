@@ -18,53 +18,74 @@ module.exports = {
             type: ApplicationCommandOptionType.String,
             choices: [
                 {
-                    name: 'Amplifier',
-                    value: 'Amplifier'
+                    name: 'Mud',
+                    value: 'Mud'
                 },
                 {
-                    name: 'Muffler',
-                    value: 'Muffler'
+                    name: 'Spool of Thread',
+                    value: 'Spool of Thread'
                 },
                 {
-                    name: 'Noise Cancellation Headphones',
-                    value: 'Noise Cancellation Headphones'
+                    name: 'Jabberjay',
+                    value: 'Jabberjay'
                 },
                 {
-                    name: 'Faulty Microphone',
-                    value: 'Faulty Microphone'
+                    name: 'Firepit',
+                    value: 'Firepit'
+                },
+                {
+                    name: 'Map',
+                    value: 'Map'
                 },
                 {
                     name: 'Vinyl',
                     value: 'Vinyl'
                 },
                 {
+                    name: 'Medicine',
+                    value: 'Medicine'
+                },
+                {
+                    name: 'Nightshade',
+                    value: 'Nightshade'
+                },
+                {
+                    name: 'Riot Shield',
+                    value: 'Riot Shield'
+                },
+                {
+                    name: 'Kunai',
+                    value: 'Kunai'
+                },
+                {
+                    name: 'Bow',
+                    value: 'Bow'
+                },
+                {
+                    name: 'Javelin',
+                    value: 'Javelin'
+                },
+                {
+                    name: 'Knife',
+                    value: 'Knife'
+                },
+                {
+                    name: 'Sword',
+                    value: 'Sword'
+                },
+                {
+                    name: 'Mace',
+                    value: 'Mace'
+                },
+                {
                     name: 'Record Label',
                     value: 'Record Label'
                 },
                 {
-                    name: 'Pickpocket',
-                    value: 'Pickpocket'
-                },
-                {
-                    name: 'Phone (a friend)',
-                    value: 'Phone (A Friend)'
-                },
-                {
-                    name: 'Flashlight',
-                    value: 'Flashlight'
-                },
-                {
-                    name: 'Mask',
-                    value: 'Mask'
-                },
-                {
-                    name: 'Licensing Agreemnt',
-                    value: 'Licensing Agreement'
-                },
-                {
-                    name: 'Scissors',
-                    value: 'Scissors'
-                }],
+                    name: 'Loot',
+                    value: 'Loot'
+                }
+            ],
             required: true,
         },
     ],

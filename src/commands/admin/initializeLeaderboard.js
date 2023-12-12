@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const Contestant = require('../../models/Contestant');
 const Eliminated = require('../../models/Eliminated'); // Assuming this is the correct path
 
-const targetChannelId = '1175250077997072410'; // Replace with the actual channel ID
+const targetChannelId = '1069474006236925983'; // Replace with the actual channel ID
 
 module.exports = {
     name: 'initializeleaderboard',
