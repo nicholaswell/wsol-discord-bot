@@ -1,7 +1,7 @@
 const Contestant = require('../../models/Contestant');
 const { ApplicationCommandOptionType } = require('discord.js');
 const updateLeaderboardMessage = require('../../editMessage/updateLeaderboardMessage');
-const LEADERBOARD_CHANNEL_ID = '1175250077997072410';
+const LEADERBOARD_CHANNEL_ID = '1069474006236925983';
 
 module.exports = {
     name: 'donatemoney',

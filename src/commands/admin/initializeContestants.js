@@ -1,5 +1,5 @@
 const Contestant = require('../../models/Contestant');
-const guildId = '1175250077476978719';
+const guildId = '1069206855542390805';
 
 module.exports = {
     name: 'initializecontestants',
@@ -9,7 +9,7 @@ module.exports = {
 
     callback: async (client, interaction) => {
         try {
-            const roleId = '1175250077497962537';
+            const roleId = '1069475661258956940';
 
             const guild = await client.guilds.fetch(guildId);
             const role = guild.roles.cache.get(roleId);

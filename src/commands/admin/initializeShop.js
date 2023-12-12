@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Shop = require('../../models/Shop')
-const targetChannelId = '1175250077997072408';
+const targetChannelId = '1183906075259457536';
 
 module.exports = {
     name: 'initializeshop',

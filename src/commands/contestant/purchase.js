@@ -1,8 +1,8 @@
 const Contestant = require('../../models/Contestant');
 const ShopItem = require('../../models/Shop');
-const SHOP_CHANNEL_ID = '1175250077997072408'
-const ANNOUNCEMENT_CHANNEL_ID = '1175250077850292243'
-const LEADERBOARD_CHANNEL_ID = '1175250077997072410';
+const SHOP_CHANNEL_ID = '1183906075259457536'
+const ANNOUNCEMENT_CHANNEL_ID = '1072281700668813472'
+const LEADERBOARD_CHANNEL_ID = '1069474006236925983';
 const { ApplicationCommandOptionType, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
 const updateShopMessage = require('../../editMessage/updateShopMessage');
 const updateLeaderboardMessage = require('../../editMessage/updateLeaderboardMessage');
@@ -19,54 +19,73 @@ module.exports = {
             description: 'The item to purchase.',
             choices: [
                 {
-                    name: 'Amplifier',
-                    value: 'Amplifier'
+                    name: 'Mud',
+                    value: 'Mud'
                 },
                 {
-                    name: 'Muffler',
-                    value: 'Muffler'
+                    name: 'Spool of Thread',
+                    value: 'Spool of Thread'
                 },
                 {
-                    name: 'Noise Cancellation Headphones',
-                    value: 'Noise Cancellation Headphones'
+                    name: 'Jabberjay',
+                    value: 'Jabberjay'
                 },
                 {
-                    name: 'Faulty Microphone',
-                    value: 'Faulty Microphone'
+                    name: 'Firepit',
+                    value: 'Firepit'
+                },
+                {
+                    name: 'Map',
+                    value: 'Map'
                 },
                 {
                     name: 'Vinyl',
                     value: 'Vinyl'
                 },
                 {
+                    name: 'Medicine',
+                    value: 'Medicine'
+                },
+                {
+                    name: 'Nightshade',
+                    value: 'Nightshade'
+                },
+                {
+                    name: 'Riot Shield',
+                    value: 'Riot Shield'
+                },
+                {
+                    name: 'Kunai',
+                    value: 'Kunai'
+                },
+                {
+                    name: 'Bow',
+                    value: 'Bow'
+                },
+                {
+                    name: 'Javelin',
+                    value: 'Javelin'
+                },
+                {
+                    name: 'Knife',
+                    value: 'Knife'
+                },
+                {
+                    name: 'Sword',
+                    value: 'Sword'
+                },
+                {
+                    name: 'Mace',
+                    value: 'Mace'
+                },
+                {
                     name: 'Record Label',
                     value: 'Record Label'
                 },
                 {
-                    name: 'Pickpocket',
-                    value: 'Pickpocket'
-                },
-                {
-                    name: 'Phone (a friend)',
-                    value: 'Phone (A Friend)'
-                },
-                {
-                    name: 'Flashlight',
-                    value: 'Flashlight'
-                },
-                {
-                    name: 'Mask',
-                    value: 'Mask'
-                },
-                {
-                    name: 'Licensing Agreemnt',
-                    value: 'Licensing Agreement'
-                },
-                {
-                    name: 'Scissors',
-                    value: 'Scissors'
+                    name: 'Loot',
+                    value: 'Loot'
                 }
-                
             ],
             required: true,
         },
