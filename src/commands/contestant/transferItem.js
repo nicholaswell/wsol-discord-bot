@@ -1,6 +1,6 @@
 const Contestant = require('../../models/Contestant');
 const { ApplicationCommandOptionType } = require('discord.js');
-const ANNOUNCEMENT_CHANNEL_ID = '1175250077850292243'
+const config = require('../../../config.json')
 const createContestantAnnouncement = require('../../createMessage/createDonateItemAnnouncement');
 
 module.exports = {
@@ -19,68 +19,72 @@ module.exports = {
             description: 'The name of the item to donate.',
             choices: [
                 {
-                    name: 'Mud',
-                    value: 'Mud'
+                    name: 'Omnitrix',
+                    value: 'Omnitrix'
                 },
                 {
-                    name: 'Spool of Thread',
-                    value: 'Spool of Thread'
+                    name: 'Scissors',
+                    value: 'Scissors'
                 },
                 {
-                    name: 'Jabberjay',
-                    value: 'Jabberjay'
+                    name: 'Pet Ditto',
+                    value: 'Pet Ditto'
                 },
                 {
-                    name: 'Firepit',
-                    value: 'Firepit'
+                    name: 'Powerpuff Hotline',
+                    value: 'Powerpuff Hotline'
                 },
                 {
-                    name: 'Map',
-                    value: 'Map'
+                    name: `Velma's Glasses`,
+                    value: `Velma's Glasses`
                 },
                 {
-                    name: 'Vinyl',
-                    value: 'Vinyl'
+                    name: `Dexter's Cloning Serum`,
+                    value: `Dexter's Cloning Serum`
                 },
                 {
-                    name: 'Medicine',
-                    value: 'Medicine'
+                    name: 'Burple Nurple',
+                    value: 'Burple Nurple'
                 },
                 {
-                    name: 'Nightshade',
-                    value: 'Nightshade'
+                    name: 'Poisonous Candy',
+                    value: 'Poisonous Candy'
                 },
                 {
-                    name: 'Riot Shield',
-                    value: 'Riot Shield'
+                    name: `Rose's Shield`,
+                    value: `Rose's Shield`
                 },
                 {
-                    name: 'Kunai',
-                    value: 'Kunai'
+                    name: `Reaper's Scythe`,
+                    value: `Reaper's Scythe`
                 },
                 {
-                    name: 'Bow',
-                    value: 'Bow'
+                    name: 'Chemical X',
+                    value: 'Chemical X'
                 },
                 {
-                    name: 'Javelin',
-                    value: 'Javelin'
+                    name: `Jack's Katana`,
+                    value: `Jack's Katana`
                 },
                 {
-                    name: 'Knife',
-                    value: 'Knife'
+                    name: `Muriel's Rolling Pin`,
+                    value: `Muriel's Rolling Pin`
                 },
                 {
-                    name: 'Sword',
-                    value: 'Sword'
+                    name: `Garnet's Gauntlet`,
+                    value: `Garnet's Gauntlet`
                 },
                 {
-                    name: 'Mace',
-                    value: 'Mace'
+                    name: `Bubbles Nano`,
+                    value: `Bubbles Nano`
                 },
                 {
-                    name: 'Record Label',
-                    value: 'Record Label'
+                    name: 'Eddy Nano',
+                    value: 'Eddy Nano'
+                },
+                {
+                    name: 'Coco Nano',
+                    value: 'Coco Nano'
                 },
                 {
                     name: 'Loot',
@@ -98,8 +102,8 @@ module.exports = {
             const itemName = interaction.options.getString('item');
 
             // Find the contestant in the database
-            const donor = await Contestant.findOne({ name: interaction.user.tag });
-            const recipientContestant = await Contestant.findOne({ name: recipient.tag });
+            const donor = await Contestant.findOne({ id: interaction.user.id });
+            const recipientContestant = await Contestant.findOne({ id: recipient.id });
 
             if (!donor || !recipientContestant) {
                 interaction.reply('Donor or recipient not found in the database.');
@@ -127,10 +131,10 @@ module.exports = {
                 await donor.save();
                 await recipientContestant.save();
 
-                interaction.reply(`Successfully donated ${itemName} to ${recipient.displayName}.`);
+                interaction.reply(`Successfully donated ${itemName} to ${recipientContestant.name}.`);
 
                 // Calls the updateShopMessage function to update the message in the shop.
-                await createContestantAnnouncement(client, interaction.user.id, recipient.id, itemName, ANNOUNCEMENT_CHANNEL_ID);
+                await createContestantAnnouncement(client, interaction.user.id, recipient.id, itemName, config.announcementChannelId);
             } else {
                 interaction.reply(`You do not own ${itemName} to donate.`);
             }

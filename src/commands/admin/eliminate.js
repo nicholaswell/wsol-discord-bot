@@ -2,7 +2,8 @@ const Contestant = require('../../models/Contestant');
 const Eliminated = require('../../models/Eliminated');
 const { ApplicationCommandOptionType } = require('discord.js');
 const updateLeaderboardMessage = require('../../editMessage/updateLeaderboardMessage');
-const LEADERBOARD_CHANNEL_ID = '1069474006236925983';
+const config = require('../../../config.json');
+const LEADERBOARD_CHANNEL_ID = config.leaderboardChannelId;
 
 module.exports = {
     name: 'eliminate',
@@ -22,7 +23,7 @@ module.exports = {
             const user = interaction.options.getUser('user');
 
             // Find the contestant in the database
-            const contestant = await Contestant.findOne({ name: user.tag });
+            const contestant = await Contestant.findOne({ id: user.id });
 
             if (!contestant) {
                 interaction.reply('Contestant not found in the database.');
@@ -41,7 +42,7 @@ module.exports = {
             await eliminatedDoc.save();
 
             // Remove the contestant from the Contestant collection
-            await Contestant.deleteOne({ name: user.tag });
+            await Contestant.deleteOne({ id: user.id });
 
             // Call the updateLeaderboardMessage method
             const leaderboardTargetChannel = client.channels.cache.get(LEADERBOARD_CHANNEL_ID);

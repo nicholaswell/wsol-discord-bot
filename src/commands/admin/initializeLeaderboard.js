@@ -1,8 +1,8 @@
 const { EmbedBuilder } = require('discord.js');
 const Contestant = require('../../models/Contestant');
-const Eliminated = require('../../models/Eliminated'); // Assuming this is the correct path
-
-const targetChannelId = '1069474006236925983'; // Replace with the actual channel ID
+const Eliminated = require('../../models/Eliminated'); 
+const config = require('../../../config.json')
+ // Replace with the actual channel ID
 
 module.exports = {
     name: 'initializeleaderboard',
@@ -12,6 +12,9 @@ module.exports = {
 
     callback: async (client, interaction) => {
         try {
+
+            const targetChannelId = config.leaderboardChannelId;
+
             // Variable for the target channel
             const targetChannel = client.channels.cache.get(targetChannelId);
 
@@ -20,7 +23,7 @@ module.exports = {
 
             // Create an embed for the leaderboard
             const embed = new EmbedBuilder()
-                .setColor([194, 33, 21])
+                .setColor([0, 255, 255])
                 .setTitle('Leaderboard')
                 .setDescription('Here are the current standings on the leaderboard:\n\n');
 

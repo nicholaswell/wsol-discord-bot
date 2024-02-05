@@ -12,7 +12,7 @@ async function updateLeaderboard(client, targetChannel) {
 
         // Create an embed for the leaderboard
         const embed = new EmbedBuilder()
-            .setColor([194, 33, 21])
+            .setColor([0, 255, 255])
             .setTitle('Leaderboard')
             .setDescription('Here are the current standings on the leaderboard:\n\n');
 

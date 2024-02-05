@@ -97,7 +97,7 @@ module.exports = {
             const itemName = interaction.options.getString('item');
 
             // Find the contestant in the database
-            const contestant = await Contestant.findOne({ name: targetUser.tag });
+            const contestant = await Contestant.findOne({ id: targetUser.id });
 
             if (!contestant) {
                 interaction.reply('Contestant not found in the database.');

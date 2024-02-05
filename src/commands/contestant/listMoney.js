@@ -9,21 +9,21 @@ module.exports = {
             name: 'user',
             description: 'The user to check the money for.',
             type: ApplicationCommandOptionType.Mentionable,
-            required: true,
+            required: false,
         },
     ],
 
     callback: async (client, interaction) => {
         try {
             // Extract user from options
-            const user = interaction.options.getUser('user');
+            const user = interaction.options.getUser('user') || interaction.user;
 
             // Find the contestant in the database
-            const contestant = await Contestant.findOne({ name: user.username });
+            const contestant = await Contestant.findOne({ id: user.id });
 
 
             if (contestant) {
-                interaction.reply(`${user.displayName} has **$${contestant.money}**.`);
+                interaction.reply(`${contestant.name} has **$${contestant.money}**.`);
             } else {
                 interaction.reply('Contestant not found in the database.');
             }
