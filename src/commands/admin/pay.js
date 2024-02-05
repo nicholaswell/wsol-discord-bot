@@ -1,7 +1,7 @@
 const Contestant = require('../../models/Contestant');
 const { ApplicationCommandOptionType, PermissionFlagBits } = require('discord.js');
 const updateLeaderboardMessage = require('../../editMessage/updateLeaderboardMessage');
-const LEADERBOARD_CHANNEL_ID = '1069474006236925983';
+const config = require('../../../config.json')
 
 module.exports = {
     name: 'pay',
@@ -29,15 +29,17 @@ module.exports = {
             const amount = interaction.options.getInteger('amount');
 
             // Find the contestant in the database
-            const contestant = await Contestant.findOne({ name: user.tag });
+            const contestant = await Contestant.findOne({ id: user.id });
 
             if (contestant) {
                 // Add the specified amount to the existing money
                 contestant.money += amount;
                 await contestant.save();
 
-                interaction.reply(`Successfully paid $${amount} to ${user.displayName}.`);
-                const leaderboardTargetChannel = client.channels.cache.get(LEADERBOARD_CHANNEL_ID);
+                interaction.reply(`Successfully paid $${amount} to <@${user.id}>.`);
+                const leaderboardTargetChannel = client.channels.cache.get(config.leaderboardChannelId);
+
+                // Update Leaderboard Message
                 await updateLeaderboardMessage(client, leaderboardTargetChannel);
 
             } else {

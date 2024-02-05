@@ -1,15 +1,16 @@
 const Contestant = require('../../models/Contestant');
-const guildId = '1069206855542390805';
+const config = require('../../../config.json')
+const guildId = config.serverId;
 
 module.exports = {
     name: 'initializecontestants',
-    description: 'Initializes the contestants with the "Contestant" role to the database.',
+    description: 'Initializes the contestants with the "Contestant" role to the database. (User must have a nickname)',
     devOnly: true,
     options: [],
 
     callback: async (client, interaction) => {
         try {
-            const roleId = '1069475661258956940';
+            const roleId = config.contestantRoleId;
 
             const guild = await client.guilds.fetch(guildId);
             const role = guild.roles.cache.get(roleId);
@@ -23,11 +24,12 @@ module.exports = {
             // Iterate over members and add them to the contestants collection
             membersWithRole.forEach(async (member) => {
                 try {
-                    const existingContestant = await Contestant.findOne({ name: member.user.tag });
+                    const existingContestant = await Contestant.findOne({ id: member.user.id });
 
                     if (!existingContestant) {
                         const newContestant = new Contestant({
-                            name: member.user.tag,
+                            id: member.user.id,
+                            name: member.nickname,
                             itemsOwned: [],
                             money: 0,
                             submitted: false,

@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const Shop = require('../../models/Shop')
-const targetChannelId = '1183906075259457536';
+const config = require('../../../config.json')
+const targetChannelId = config.shopChannelId;
 
 module.exports = {
     name: 'initializeshop',
@@ -16,7 +17,7 @@ module.exports = {
             const shopItems = await Shop.find();
 
             const embed = new EmbedBuilder()
-                 .setColor([194, 33, 21])
+                 .setColor([0, 255, 255])
                  .setTitle('Shop')
                  .setDescription(`Welcome to the shop! Here are the available items: \n\n`);
 

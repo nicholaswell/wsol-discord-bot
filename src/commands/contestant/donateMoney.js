@@ -1,7 +1,8 @@
 const Contestant = require('../../models/Contestant');
 const { ApplicationCommandOptionType } = require('discord.js');
 const updateLeaderboardMessage = require('../../editMessage/updateLeaderboardMessage');
-const LEADERBOARD_CHANNEL_ID = '1069474006236925983';
+const createContestantAnnouncement = require('../../createMessage/createDonateMoneyAnnouncement');
+const config = require('../../../config.json')
 
 module.exports = {
     name: 'donatemoney',
@@ -28,8 +29,8 @@ module.exports = {
             const amount = interaction.options.getInteger('amount');
 
             // Find the donor and recipient in the database
-            const donor = await Contestant.findOne({ name: interaction.user.tag });
-            const recipientContestant = await Contestant.findOne({ name: recipient.tag });
+            const donor = await Contestant.findOne({ id: interaction.user.id });
+            const recipientContestant = await Contestant.findOne({ id: recipient.id });
 
             if (!donor || !recipientContestant) {
                 interaction.reply('Donor or recipient not found in the database.');
@@ -52,10 +53,15 @@ module.exports = {
             await donor.save();
             await recipientContestant.save();
 
-            interaction.reply(`Successfully donated $${amount} to ${recipient.tag}.`);
+            interaction.reply(`Successfully donated $${amount} to ${recipientContestant.name}.`);
 
-            const leaderboardTargetChannel = client.channels.cache.get(LEADERBOARD_CHANNEL_ID);
+            const leaderboardTargetChannel = client.channels.cache.get(config.leaderboardChannelId);
             await updateLeaderboardMessage(client, leaderboardTargetChannel);
+
+            // Calls the updateShopMessage function to update the message in the shop.
+            if(amount >= 50){
+                await createContestantAnnouncement(client, interaction.user.id, recipient.id, amount, config.announcementChannelId);
+            }
         } catch (error) {
             console.error('Error in donateMoney command:', error);
             interaction.reply('An error occurred while processing the command.');

@@ -1,8 +1,7 @@
 const Contestant = require('../../models/Contestant');
 const ShopItem = require('../../models/Shop');
-const SHOP_CHANNEL_ID = '1183906075259457536'
-const ANNOUNCEMENT_CHANNEL_ID = '1072281700668813472'
-const LEADERBOARD_CHANNEL_ID = '1069474006236925983';
+const ShopState = require('../../models/ShopState');
+const config = require('../../../config.json')
 const { ApplicationCommandOptionType, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
 const updateShopMessage = require('../../editMessage/updateShopMessage');
 const updateLeaderboardMessage = require('../../editMessage/updateLeaderboardMessage');
@@ -19,73 +18,78 @@ module.exports = {
             description: 'The item to purchase.',
             choices: [
                 {
-                    name: 'Mud',
-                    value: 'Mud'
+                    name: 'Omnitrix',
+                    value: 'Omnitrix'
                 },
                 {
-                    name: 'Spool of Thread',
-                    value: 'Spool of Thread'
+                    name: 'Scissors',
+                    value: 'Scissors'
                 },
                 {
-                    name: 'Jabberjay',
-                    value: 'Jabberjay'
+                    name: 'Pet Ditto',
+                    value: 'Pet Ditto'
                 },
                 {
-                    name: 'Firepit',
-                    value: 'Firepit'
+                    name: 'Powerpuff Hotline',
+                    value: 'Powerpuff Hotline'
                 },
                 {
-                    name: 'Map',
-                    value: 'Map'
+                    name: `Velma's Glasses`,
+                    value: `Velma's Glasses`
                 },
                 {
-                    name: 'Vinyl',
-                    value: 'Vinyl'
+                    name: `Dexter's Cloning Serum`,
+                    value: `Dexter's Cloning Serum`
                 },
                 {
-                    name: 'Medicine',
-                    value: 'Medicine'
+                    name: 'Burple Nurple',
+                    value: 'Burple Nurple'
                 },
                 {
-                    name: 'Nightshade',
-                    value: 'Nightshade'
+                    name: 'Poisonous Candy',
+                    value: 'Poisonous Candy'
                 },
                 {
-                    name: 'Riot Shield',
-                    value: 'Riot Shield'
+                    name: `Rose's Shield`,
+                    value: `Rose's Shield`
                 },
                 {
-                    name: 'Kunai',
-                    value: 'Kunai'
+                    name: `Reaper's Scythe`,
+                    value: `Reaper's Scythe`
                 },
                 {
-                    name: 'Bow',
-                    value: 'Bow'
+                    name: 'Chemical X',
+                    value: 'Chemical X'
                 },
                 {
-                    name: 'Javelin',
-                    value: 'Javelin'
+                    name: `Jack's Katana`,
+                    value: `Jack's Katana`
                 },
                 {
-                    name: 'Knife',
-                    value: 'Knife'
+                    name: `Muriel's Rolling Pin`,
+                    value: `Muriel's Rolling Pin`
                 },
                 {
-                    name: 'Sword',
-                    value: 'Sword'
+                    name: `Garnet's Gauntlet`,
+                    value: `Garnet's Gauntlet`
                 },
                 {
-                    name: 'Mace',
-                    value: 'Mace'
+                    name: `Bubbles Nano`,
+                    value: `Bubbles Nano`
                 },
                 {
-                    name: 'Record Label',
-                    value: 'Record Label'
+                    name: 'Eddy Nano',
+                    value: 'Eddy Nano'
+                },
+                {
+                    name: 'Coco Nano',
+                    value: 'Coco Nano'
                 },
                 {
                     name: 'Loot',
                     value: 'Loot'
                 }
+                
             ],
             required: true,
         },
@@ -93,11 +97,19 @@ module.exports = {
 
     callback: async (client, interaction) => {
         try {
+
+            const shopState = await ShopState.findOne();
+
+            if (shopState && !shopState.isEnabled) {
+                interaction.reply('The shop is currently disabled.');
+                return;
+            }
+            
             // Extract item name from options
             const itemName = interaction.options.getString('item');
 
             // Find the contestant in the database
-            const contestant = await Contestant.findOne({ name: interaction.user.tag });
+            const contestant = await Contestant.findOne({ id: interaction.user.id });
 
             // Find the shop item in the database
             const shopItem = await ShopItem.findOne({ name: itemName });
@@ -166,13 +178,13 @@ module.exports = {
 
                     // Update the shop message after the purchase
                     // Getting shop and contestant-announcement channels
-                    const shopTargetChannel = client.channels.cache.get(SHOP_CHANNEL_ID);
-                    const leaderboardTargetChannel = client.channels.cache.get(LEADERBOARD_CHANNEL_ID);
+                    const shopTargetChannel = client.channels.cache.get(config.shopChannelId);
+                    const leaderboardTargetChannel = client.channels.cache.get(config.leaderboardChannelId);
 
                     // Calls the updateShopMessage function to update the message in the shop.
                     await updateShopMessage(client, shopTargetChannel, updatedShopItems);
                     await updateLeaderboardMessage(client, leaderboardTargetChannel);
-                    await createContestantAnnouncement(client, interaction, shopItem, ANNOUNCEMENT_CHANNEL_ID);
+                    await createContestantAnnouncement(client, interaction, shopItem, config.announcementChannelId);
 
 
                 } else {

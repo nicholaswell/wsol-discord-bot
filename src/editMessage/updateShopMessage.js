@@ -3,7 +3,7 @@ const { EmbedBuilder } = require('discord.js');
 async function updateShopMessage(client, targetChannel, shopItems) {
 
     const embed = new EmbedBuilder()
-        .setColor([194, 33, 21])
+        .setColor([0, 255, 255])
         .setTitle('Shop')
         .setDescription(`Welcome to the shop! Here are the available items: \n\n`);
 
