@@ -34,13 +34,13 @@ module.exports = {
             const startDateTimeString = `${startDateString} ${startTimeString}`;
             const startDateTime = new Date(startDateTimeString);
 
+            updateChecklist(client, startDateTime);
+
             // Monitor messages in the submissions channel
-            client.on('messageCreate', async (message) => {
-                if (message.channel.id === config.submissionsChannelId && message.createdAt >= startDateTime) {
-                    // Handle message and update checklist accordingly
-                    await updateChecklist(message);
-                }
-            });
+            setInterval(async () => {
+                await updateChecklist(client, startDateTime)
+            }, 10 * 60 * 1000); // 10 minutes interval
+
 
             await interaction.editReply('Checklist tracking started.');
         } catch (error) {
@@ -50,15 +50,27 @@ module.exports = {
     },
 };
 
-async function updateChecklist(message) {
+async function updateChecklist(client, startDateTime) {
     try {
         // Fetch contestants from the database
         const contestants = await Contestant.find();
 
-        // Fetch all messages in the submissions channel since the bot started
-        const messages = await message.channel.messages.fetch();
+        const submissionsChannel = client.channels.cache.get(config.submissionsChannelId);
 
-        const userIds = messages
+        // Fetch all messages in the submissions channel since the bot started
+        const messages = await submissionsChannel.messages.fetch({limit: 30});
+
+        // Convert each message's createdTimestamp to the desired format
+        const newMessages = [];
+
+        messages.forEach(message => {
+            const createdDateTime = new Date(message.createdTimestamp);
+            if (createdDateTime >= startDateTime) {
+                newMessages.push(message);
+            }
+        });
+
+        const userIds = newMessages
             .filter(msg => msg.author)
             .map(msg => msg.author.id);
 
@@ -74,7 +86,7 @@ async function updateChecklist(message) {
         const embed = createSubmissionStatusEmbed(updatedContestants);
 
         // Get the existing message in the checklist channel
-        const checklistChannel = message.guild.channels.cache.get(config.checklistChannelId);
+        const checklistChannel = client.channels.cache.get(config.checklistChannelId);
         if (!checklistMessage) {
             // If the checklist message is not found, send a new message with the embed
             checklistMessage = await checklistChannel.send({ embeds: [embed] });
@@ -111,6 +123,8 @@ async function updateNotSubmittedContestants(contestants, userIds) {
         }
     }
 }
+
+
 
 // Function to create an embed with the list of contestants and their submission status
 function createSubmissionStatusEmbed(contestants) {

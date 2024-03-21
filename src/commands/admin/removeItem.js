@@ -18,68 +18,60 @@ module.exports = {
             type: ApplicationCommandOptionType.String,
             choices: [
                 {
-                    name: 'Mud',
-                    value: 'Mud'
+                    name: 'Mask',
+                    value: 'Mask'
                 },
                 {
-                    name: 'Spool of Thread',
-                    value: 'Spool of Thread'
+                    name: 'Scissors',
+                    value: 'Scissors'
                 },
                 {
-                    name: 'Jabberjay',
-                    value: 'Jabberjay'
+                    name: 'Licensing Agreement',
+                    value: 'Licensing Agreement'
                 },
                 {
-                    name: 'Firepit',
-                    value: 'Firepit'
+                    name: 'Phone a Friend',
+                    value: 'Phone a Friend'
                 },
                 {
-                    name: 'Map',
-                    value: 'Map'
+                    name: `Flashlight`,
+                    value: `Flashlight`
                 },
                 {
-                    name: 'Vinyl',
-                    value: 'Vinyl'
+                    name: `Coathanger`,
+                    value: `Coathanger`
                 },
                 {
-                    name: 'Medicine',
-                    value: 'Medicine'
+                    name: 'Amplifier',
+                    value: 'Amplifier'
                 },
                 {
-                    name: 'Nightshade',
-                    value: 'Nightshade'
+                    name: 'Muffler',
+                    value: 'Muffler'
                 },
                 {
-                    name: 'Riot Shield',
-                    value: 'Riot Shield'
+                    name: `Noise Cancellation Headphones`,
+                    value: `Noise Cancellation Headphones`
                 },
                 {
-                    name: 'Kunai',
-                    value: 'Kunai'
+                    name: `Miss Voodoo`,
+                    value: `Miss Voodoo`
                 },
                 {
-                    name: 'Bow',
-                    value: 'Bow'
+                    name: 'Cranberry Juice',
+                    value: 'Cranberry Juice'
                 },
                 {
-                    name: 'Javelin',
-                    value: 'Javelin'
+                    name: `Breakfast in Bed`,
+                    value: `Breakfast in Bed`
                 },
                 {
-                    name: 'Knife',
-                    value: 'Knife'
+                    name: `Punch`,
+                    value: `Punch`
                 },
                 {
-                    name: 'Sword',
-                    value: 'Sword'
-                },
-                {
-                    name: 'Mace',
-                    value: 'Mace'
-                },
-                {
-                    name: 'Record Label',
-                    value: 'Record Label'
+                    name: `Spit`,
+                    value: `Spit`
                 },
                 {
                     name: 'Loot',
