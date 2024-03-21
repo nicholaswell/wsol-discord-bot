@@ -18,78 +18,65 @@ module.exports = {
             description: 'The item to purchase.',
             choices: [
                 {
-                    name: 'Omnitrix',
-                    value: 'Omnitrix'
+                    name: 'Mask',
+                    value: 'Mask'
                 },
                 {
                     name: 'Scissors',
                     value: 'Scissors'
                 },
                 {
-                    name: 'Pet Ditto',
-                    value: 'Pet Ditto'
+                    name: 'Licensing Agreement',
+                    value: 'Licensing Agreement'
                 },
                 {
-                    name: 'Powerpuff Hotline',
-                    value: 'Powerpuff Hotline'
+                    name: 'Phone a Friend',
+                    value: 'Phone a Friend'
                 },
                 {
-                    name: `Velma's Glasses`,
-                    value: `Velma's Glasses`
+                    name: `Flashlight`,
+                    value: `Flashlight`
                 },
                 {
-                    name: `Dexter's Cloning Serum`,
-                    value: `Dexter's Cloning Serum`
+                    name: `Coathanger`,
+                    value: `Coathanger`
                 },
                 {
-                    name: 'Burple Nurple',
-                    value: 'Burple Nurple'
+                    name: 'Amplifier',
+                    value: 'Amplifier'
                 },
                 {
-                    name: 'Poisonous Candy',
-                    value: 'Poisonous Candy'
+                    name: 'Muffler',
+                    value: 'Muffler'
                 },
                 {
-                    name: `Rose's Shield`,
-                    value: `Rose's Shield`
+                    name: `Noise Cancellation Headphones`,
+                    value: `Noise Cancellation Headphones`
                 },
                 {
-                    name: `Reaper's Scythe`,
-                    value: `Reaper's Scythe`
+                    name: `Miss Voodoo`,
+                    value: `Miss Voodoo`
                 },
                 {
-                    name: 'Chemical X',
-                    value: 'Chemical X'
+                    name: 'Cranberry Juice',
+                    value: 'Cranberry Juice'
                 },
                 {
-                    name: `Jack's Katana`,
-                    value: `Jack's Katana`
+                    name: `Breakfast in Bed`,
+                    value: `Breakfast in Bed`
                 },
                 {
-                    name: `Muriel's Rolling Pin`,
-                    value: `Muriel's Rolling Pin`
+                    name: `Punch`,
+                    value: `Punch`
                 },
                 {
-                    name: `Garnet's Gauntlet`,
-                    value: `Garnet's Gauntlet`
-                },
-                {
-                    name: `Bubbles Nano`,
-                    value: `Bubbles Nano`
-                },
-                {
-                    name: 'Eddy Nano',
-                    value: 'Eddy Nano'
-                },
-                {
-                    name: 'Coco Nano',
-                    value: 'Coco Nano'
+                    name: `Spit`,
+                    value: `Spit`
                 },
                 {
                     name: 'Loot',
                     value: 'Loot'
                 }
-                
             ],
             required: true,
         },
