@@ -17,7 +17,7 @@ module.exports = {
             const shopItems = await Shop.find();
 
             const embed = new EmbedBuilder()
-                 .setColor([0, 255, 255])
+                 .setColor([224,9,120])
                  .setTitle('Shop')
                  .setDescription(`Welcome to the shop! Here are the available items: \n\n`);
 
