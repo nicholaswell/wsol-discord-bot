@@ -1,12 +1,22 @@
+const { ApplicationCommandOptionType, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
 const Contestant = require('../../models/Contestant');
 const ShopItem = require('../../models/Shop');
 const ShopState = require('../../models/ShopState');
-const config = require('../../../config.json')
-const { ApplicationCommandOptionType, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
+const config = require('../../../config.json');
 const updateShopMessage = require('../../editMessage/updateShopMessage');
 const updateLeaderboardMessage = require('../../editMessage/updateLeaderboardMessage');
 const createContestantAnnouncement = require('../../createMessage/createPurchaseAnnouncement');
+const stringSimilarity = require('string-similarity');
 
+const items = [
+    'Mask', 'Scissors', 'Licensing Agreement', 'Phone a Friend', 'Flashlight', 'Coathanger',
+    'Amplifier', 'Muffler', 'Noise Cancellation Headphones', 'Loot', 'Wuuf\'s Wheel of Fortune',
+    'Musical Wand', 'Tech Wand', 'Wave Wand', 'Dragon Wand', 'Galaxy Wand', 'Life Wand', 'Animal Wand',
+    'Turnips', 'Barbie Mirror', 'Slingshot', 'Barbie Car', 'Javelin', 'Mace', 'Buttercup Nano', 'Courage Nano',
+    'Rigby Nano', 'Spit', 'Deathberry', 'Starclan\'s Blessing', 'Kunai', 'Knife', 'Coco Nano', 'Baddie Phone',
+    'Balloon', 'Moonpool Plunge', 'Bow', 'Sword', 'Eddy Nano', 'Cranberry Juice', 'Punch', 'Breakfast in Bed',
+    'Mug', 'Switch Up'
+];
 
 module.exports = {
     name: 'purchase',
@@ -16,75 +26,12 @@ module.exports = {
             name: 'item',
             type: ApplicationCommandOptionType.String,
             description: 'The item to purchase.',
-            choices: [
-                {
-                    name: 'Mask',
-                    value: 'Mask'
-                },
-                {
-                    name: 'Scissors',
-                    value: 'Scissors'
-                },
-                {
-                    name: 'Licensing Agreement',
-                    value: 'Licensing Agreement'
-                },
-                {
-                    name: 'Phone a Friend',
-                    value: 'Phone a Friend'
-                },
-                {
-                    name: `Flashlight`,
-                    value: `Flashlight`
-                },
-                {
-                    name: `Coathanger`,
-                    value: `Coathanger`
-                },
-                {
-                    name: 'Amplifier',
-                    value: 'Amplifier'
-                },
-                {
-                    name: 'Muffler',
-                    value: 'Muffler'
-                },
-                {
-                    name: `Noise Cancellation Headphones`,
-                    value: `Noise Cancellation Headphones`
-                },
-                {
-                    name: `Miss Voodoo`,
-                    value: `Miss Voodoo`
-                },
-                {
-                    name: 'Cranberry Juice',
-                    value: 'Cranberry Juice'
-                },
-                {
-                    name: `Breakfast in Bed`,
-                    value: `Breakfast in Bed`
-                },
-                {
-                    name: `Punch`,
-                    value: `Punch`
-                },
-                {
-                    name: `Spit`,
-                    value: `Spit`
-                },
-                {
-                    name: 'Loot',
-                    value: 'Loot'
-                }
-            ],
             required: true,
         },
     ],
 
     callback: async (client, interaction) => {
         try {
-
             const shopState = await ShopState.findOne();
 
             if (shopState && !shopState.isEnabled) {
@@ -93,7 +40,18 @@ module.exports = {
             }
             
             // Extract item name from options
-            const itemName = interaction.options.getString('item');
+            const inputItemName = interaction.options.getString('item');
+
+            // Find the closest matching item name
+            const matches = stringSimilarity.findBestMatch(inputItemName, items);
+            const bestMatch = matches.bestMatch;
+
+            // Check if the match is sufficiently close
+            if (bestMatch.rating < 0.3) {
+                return interaction.reply(`Item "${inputItemName}" not found. Please check the item name and try again.`);
+            }
+
+            const itemName = bestMatch.target;
 
             // Find the contestant in the database
             const contestant = await Contestant.findOne({ id: interaction.user.id });
@@ -110,12 +68,12 @@ module.exports = {
             const firstButton = new ButtonBuilder()
                 .setCustomId('confirm')
                 .setLabel('Yes')
-                .setStyle(ButtonStyle.Success)
+                .setStyle(ButtonStyle.Success);
 
             const secondButton = new ButtonBuilder()
                 .setCustomId('cancel')
                 .setLabel('No')
-                .setStyle(ButtonStyle.Danger)
+                .setStyle(ButtonStyle.Danger);
 
             const buttonRow = new ActionRowBuilder().addComponents(firstButton, secondButton);
 
@@ -129,8 +87,8 @@ module.exports = {
             const collector = reply.createMessageComponentCollector({
                 componentType: ComponentType.Button,
                 filter,
-                time: 5_000
-            })
+                time: 5_000,
+            });
 
             collector.on('collect', async i => {
                 if (i.customId === 'confirm') {
@@ -164,22 +122,15 @@ module.exports = {
                     const updatedShopItems = await ShopItem.find();
 
                     // Update the shop message after the purchase
-                    // Getting shop and contestant-announcement channels
                     const shopTargetChannel = client.channels.cache.get(config.shopChannelId);
                     const leaderboardTargetChannel = client.channels.cache.get(config.leaderboardChannelId);
 
-                    // Calls the updateShopMessage function to update the message in the shop.
-                    await updateShopMessage(client, shopTargetChannel, updatedShopItems);
                     await updateLeaderboardMessage(client, leaderboardTargetChannel);
                     await createContestantAnnouncement(client, interaction, shopItem, config.announcementChannelId);
-
-
                 } else {
                     interaction.followUp('Purchase canceled.');
                 }
                 collector.stop();
-
-                
             });
 
             collector.on('end', () => {
