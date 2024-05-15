@@ -1,5 +1,16 @@
-const Contestant = require('../../models/Contestant');
 const { ApplicationCommandOptionType } = require('discord.js');
+const Contestant = require('../../models/Contestant');
+const items = [
+    'Mask', 'Scissors', 'Licensing Agreement', 'Phone a Friend',
+    'Flashlight', 'Coathanger', 'Amplifier', 'Muffler',
+    'Noise Cancellation Headphones', 'Miss Voodoo', 'Faulty Microphone',
+    'Turnips', 'Balloon', 'Slingshot', 'Kunai', 'Bow', 'Javelin', 'Knife',
+    'Sword', 'Mace', 'Punch', 'Spit', 'Breakfast in Bed', 'Cranberry Juice',
+    'Mug', 'Theme Wheel', 'Random Sabotage', 'Kneecap Breaker', 'Double or Nothing',
+    '10 Free Spins', 'Diamond', 'Unlucky Penny', 'Another Drink', 'Horse Advantage',
+    'Dueling Guns', 'Empty Box', 'Item Voucher'
+];
+const stringSimilarity = require('string-similarity');
 
 module.exports = {
     name: 'removeitem',
@@ -14,70 +25,8 @@ module.exports = {
         },
         {
             name: 'item',
-            description: 'The name of the item to remove.',
             type: ApplicationCommandOptionType.String,
-            choices: [
-                {
-                    name: 'Mask',
-                    value: 'Mask'
-                },
-                {
-                    name: 'Scissors',
-                    value: 'Scissors'
-                },
-                {
-                    name: 'Licensing Agreement',
-                    value: 'Licensing Agreement'
-                },
-                {
-                    name: 'Phone a Friend',
-                    value: 'Phone a Friend'
-                },
-                {
-                    name: `Flashlight`,
-                    value: `Flashlight`
-                },
-                {
-                    name: `Coathanger`,
-                    value: `Coathanger`
-                },
-                {
-                    name: 'Amplifier',
-                    value: 'Amplifier'
-                },
-                {
-                    name: 'Muffler',
-                    value: 'Muffler'
-                },
-                {
-                    name: `Noise Cancellation Headphones`,
-                    value: `Noise Cancellation Headphones`
-                },
-                {
-                    name: `Miss Voodoo`,
-                    value: `Miss Voodoo`
-                },
-                {
-                    name: 'Cranberry Juice',
-                    value: 'Cranberry Juice'
-                },
-                {
-                    name: `Breakfast in Bed`,
-                    value: `Breakfast in Bed`
-                },
-                {
-                    name: `Punch`,
-                    value: `Punch`
-                },
-                {
-                    name: `Spit`,
-                    value: `Spit`
-                },
-                {
-                    name: 'Loot',
-                    value: 'Loot'
-                }
-            ],
+            description: 'The name of the item to remove.',
             required: true,
         },
     ],
@@ -86,14 +35,24 @@ module.exports = {
         try {
             // Extract user and item name from options
             const targetUser = interaction.options.getUser('user');
-            const itemName = interaction.options.getString('item');
+            const inputItemName = interaction.options.getString('item');
+
+            // Find the closest matching item name
+            const matches = stringSimilarity.findBestMatch(inputItemName, items);
+            const bestMatch = matches.bestMatch;
+
+            // Check if the match is sufficiently close
+            if (bestMatch.rating < 0.5) {
+                return interaction.reply(`Item "${inputItemName}" not found. Please check the item name and try again.`);
+            }
+
+            const itemName = bestMatch.target;
 
             // Find the contestant in the database
             const contestant = await Contestant.findOne({ id: targetUser.id });
 
             if (!contestant) {
-                interaction.reply('Contestant not found in the database.');
-                return;
+                return interaction.reply('Contestant not found in the database.');
             }
 
             // Find the index of the item in the itemsOwned array
@@ -107,13 +66,13 @@ module.exports = {
                 // Save changes to the database
                 await contestant.save();
 
-                interaction.reply(`Successfully removed **${itemName}** from ${targetUser.displayName}'s items.`);
+                return interaction.reply(`Successfully removed **${itemName}** from ${targetUser.displayName}'s items.`);
             } else {
-                interaction.reply(`${targetUser.tag} does not own ${itemName}.`);
+                return interaction.reply(`${targetUser.tag} does not own ${itemName}.`);
             }
         } catch (error) {
             console.error('Error in removeitem command:', error);
-            interaction.reply('An error occurred while processing the command.');
+            return interaction.reply('An error occurred while processing the command.');
         }
     },
 };
