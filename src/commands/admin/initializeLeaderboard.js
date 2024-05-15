@@ -1,7 +1,12 @@
 const { MessageEmbed } = require('discord.js');
 const Contestant = require('../../models/Contestant');
 const Eliminated = require('../../models/Eliminated'); 
+<<<<<<< HEAD
 const config = require('../../../config.json');
+=======
+const config = require('../../../config.json')
+
+>>>>>>> v2
 
 module.exports = {
     name: 'initializeleaderboard',
@@ -19,12 +24,18 @@ module.exports = {
             // Fetch all contestants from the database
             const contestants = await Contestant.find();
 
+<<<<<<< HEAD
             // Create an array to hold embeds
             const embeds = [];
 
             // Create an initial embed for the leaderboard
             let embed = new MessageEmbed()
                 .setColor([224,9,120])
+=======
+            // Create an embed for the leaderboard
+            const embed = new EmbedBuilder()
+                .setColor(config.color)
+>>>>>>> v2
                 .setTitle('Leaderboard')
                 .setDescription('Here are the current standings on the leaderboard:\n\n');
 

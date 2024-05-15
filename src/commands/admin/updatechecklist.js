@@ -1,9 +1,10 @@
-const { EmbedBuilder } = require('discord.js'); // Import EmbedBuilder
+const { EmbedBuilder, BurstHandlerMajorIdKey } = require('discord.js'); // Import EmbedBuilder
 const { ApplicationCommandOptionType } = require('discord.js');
 const Contestant = require('../../models/Contestant');
 const config = require('../../../config.json');
 
-let checklistMessage = null
+let checklistMessage = null;
+let checklistInterval = null;
 
 module.exports = {
     name: 'updatechecklist',
@@ -21,6 +22,18 @@ module.exports = {
             description: 'Time to start tracking messages (HH:MM AM/PM)',
             type: ApplicationCommandOptionType.String,
             required: true
+        },
+        {
+            name: 'enddate',
+            description: 'Date to stop tracking messages (MM-DD-YYYY)',
+            type: ApplicationCommandOptionType.String,
+            required: true
+        },
+        {
+            name: 'endtime',
+            description: 'Time to stop tracking messages (HH:MM AM/PM)',
+            type: ApplicationCommandOptionType.String,
+            required: true
         }
     ],
 
@@ -34,15 +47,35 @@ module.exports = {
             const startDateTimeString = `${startDateString} ${startTimeString}`;
             const startDateTime = new Date(startDateTimeString);
 
-            updateChecklist(client, startDateTime);
+            // Parse end date and time
+            const endDateString = interaction.options.getString('enddate');
+            const endTimeString = interaction.options.getString('endtime');
+            const endDateTimeString = `${endDateString} ${endTimeString}`;
+            const endDateTime = new Date(endDateTimeString);
 
-            // Monitor messages in the submissions channel
-            setInterval(async () => {
-                await updateChecklist(client, startDateTime)
-            }, 10 * 60 * 1000); // 10 minutes interval
-
+            updateChecklist(client, startDateTime, endDateTime);
 
             await interaction.editReply('Checklist tracking started.');
+
+            // Check if current time is past the end time
+            const currentTime = new Date();
+            if (currentTime > endDateTime) {
+                console.log('End time already reached. Stopping checklist tracking.');
+                return;
+            }
+
+            // Monitor messages in the submissions channel
+            checklistInterval = setInterval(async () => {
+                const currentTime = new Date();
+                if (currentTime > endDateTime) {
+                    // Stop updating the checklist
+                    clearInterval(checklistInterval);
+                    console.log('Checklist tracking stopped.');
+                } else {
+                    await updateChecklist(client, startDateTime, endDateTime);
+                }
+            }, 10 * 60 * 1000); // 10 minutes interval
+
         } catch (error) {
             console.error('Error in trackchecklist command:', error);
             await interaction.editReply('An error occurred while processing the command.');
@@ -50,7 +83,7 @@ module.exports = {
     },
 };
 
-async function updateChecklist(client, startDateTime) {
+async function updateChecklist(client, startDateTime, endDateTime) {
     try {
         // Fetch contestants from the database
         const contestants = await Contestant.find();
@@ -65,7 +98,7 @@ async function updateChecklist(client, startDateTime) {
 
         messages.forEach(message => {
             const createdDateTime = new Date(message.createdTimestamp);
-            if (createdDateTime >= startDateTime) {
+            if (createdDateTime >= startDateTime && createdDateTime <= endDateTime) {
                 newMessages.push(message);
             }
         });
@@ -93,6 +126,14 @@ async function updateChecklist(client, startDateTime) {
         } else {
             // If the checklist message exists, update it with the new embed
             await checklistMessage.edit({ embeds: [embed] });
+        }
+
+        // Check if current time is past the end time
+        const currentTime = new Date();
+        if (currentTime > endDateTime) {
+            // Stop updating the checklist
+            clearInterval(checklistInterval);
+            console.log('Checklist tracking stopped.');
         }
     } catch (error) {
         console.error('Error updating checklist:', error);
@@ -131,7 +172,7 @@ function createSubmissionStatusEmbed(contestants) {
     const embed = new EmbedBuilder()
         .setTitle('Checklist')
         .setDescription('List of contestants and their submission status:')
-        .setColor('#00FFFF'); // Cyan color
+        .setColor(config.color); 
 
     const fields = contestants.map(contestant => {
         const status = contestant.submitted ? '✅ Submitted' : '❌ Not Submitted';

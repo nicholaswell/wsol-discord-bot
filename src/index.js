@@ -4,8 +4,10 @@ require('dotenv').config();
 
 const { TOKEN ,  GUILD_ID, CLIENT_ID, DATABASE_CONNECTION_STRING } = process.env;
 const { mongoose } = require('mongoose');
-const {Client, GatewayIntentBits} = require('discord.js');
+const {Client, GatewayIntentBits, Collection} = require('discord.js');
 const eventHandler = require('./handlers/eventHandler');
+
+
 
 // Initializing intents
 
@@ -15,8 +17,11 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
-	],
+	]
 });
+
+client.cooldowns = new Collection();
+
 
 // Database Connection
 
@@ -28,6 +33,7 @@ const client = new Client({
 		console.log(`Error connecting to the database: ${error}`);
 	}
 })();
+
 
 
 eventHandler(client);
