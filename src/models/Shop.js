@@ -12,6 +12,9 @@ const shopSchema = new Schema({
     },
     remaining: {
         type: Number
+    },
+    season:{
+        type: Number
     }
 
 },

@@ -2,6 +2,18 @@ const Contestant = require('../../models/Contestant');
 const { ApplicationCommandOptionType } = require('discord.js');
 const config = require('../../../config.json')
 const createContestantAnnouncement = require('../../createMessage/createDonateItemAnnouncement');
+const stringSimilarity = require('string-similarity');
+
+const items = [
+    'Mask', 'Scissors', 'Licensing Agreement', 'Phone a Friend', 'Flashlight', 'Coathanger',
+    'Amplifier', 'Muffler', 'Noise Cancellation Headphones', 'Loot', 'Wuuf\'s Wheel of Fortune',
+    'Musical Wand', 'Tech Wand', 'Wave Wand', 'Dragon Wand', 'Galaxy Wand', 'Life Wand', 'Animal Wand',
+    'Turnips', 'Barbie Mirror', 'Slingshot', 'Barbie Car', 'Javelin', 'Mace', 'Buttercup Nano', 'Courage Nano',
+    'Rigby Nano', 'Spit', 'Deathberry', 'Starclan\'s Blessing', 'Kunai', 'Knife', 'Coco Nano', 'Baddie Phone',
+    'Balloon', 'Moonpool Plunge', 'Bow', 'Sword', 'Eddy Nano', 'Cranberry Juice', 'Punch', 'Breakfast in Bed',
+    'Mug', 'Switch Up', 'Theme Wheel', 'Random Sabotage', 'Double or Nothing', '10 Free Spins', 'Diamond',
+    'Unlucky Penny', 'Another Drink', 'Horse Advantage', 'Dueling Guns', 'Empty Box'
+];
 
 module.exports = {
     name: 'transferitem',
@@ -14,80 +26,28 @@ module.exports = {
             required: true,
         },
         {
-            name: 'item',
+            name: 'itemname',
+            description: 'Name of the item to be marked as unused.',
             type: ApplicationCommandOptionType.String,
-            description: 'The name of the item to donate.',
-            choices: [
-                {
-                    name: 'Mask',
-                    value: 'Mask'
-                },
-                {
-                    name: 'Scissors',
-                    value: 'Scissors'
-                },
-                {
-                    name: 'Licensing Agreement',
-                    value: 'Licensing Agreement'
-                },
-                {
-                    name: 'Phone a Friend',
-                    value: 'Phone a Friend'
-                },
-                {
-                    name: `Flashlight`,
-                    value: `Flashlight`
-                },
-                {
-                    name: `Coathanger`,
-                    value: `Coathanger`
-                },
-                {
-                    name: 'Amplifier',
-                    value: 'Amplifier'
-                },
-                {
-                    name: 'Muffler',
-                    value: 'Muffler'
-                },
-                {
-                    name: `Noise Cancellation Headphones`,
-                    value: `Noise Cancellation Headphones`
-                },
-                {
-                    name: `Miss Voodoo`,
-                    value: `Miss Voodoo`
-                },
-                {
-                    name: 'Cranberry Juice',
-                    value: 'Cranberry Juice'
-                },
-                {
-                    name: `Breakfast in Bed`,
-                    value: `Breakfast in Bed`
-                },
-                {
-                    name: `Punch`,
-                    value: `Punch`
-                },
-                {
-                    name: `Spit`,
-                    value: `Spit`
-                },
-                {
-                    name: 'Loot',
-                    value: 'Loot'
-                }
-            ],
             required: true,
-        },
+        }
+
     ],
 
     callback: async (client, interaction) => {
         try {
             // Extract recipient and item name from options
             const recipient = interaction.options.getUser('recipient');
-            const itemName = interaction.options.getString('item');
+            const inputItemName = interaction.options.getString('itemname');
+
+            const matches = stringSimilarity.findBestMatch(inputItemName, items);
+            const bestMatch = matches.bestMatch;
+
+            if (bestMatch.rating < 0.5) {
+                return interaction.reply(`Item "${inputItemName}" not found. Please check the item name and try again.`);
+            }
+
+            const itemName = bestMatch.target;
 
             // Find the contestant in the database
             const donor = await Contestant.findOne({ id: interaction.user.id });

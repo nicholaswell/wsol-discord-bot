@@ -134,7 +134,7 @@ async function processRankings(client) {
             const name = names[i];
         
       
-            const contestantImageFileName = `${name}.png`; // Assuming the image file name matches the contestant's name
+            const contestantImageFileName = `${name}.png`; 
             const contestantImageFilePath = path.join(__dirname, '../../images/contestants', contestantImageFileName);
             const borderImagePath = path.join(__dirname, '../../images/borders/secondaryborder.png');
         

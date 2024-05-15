@@ -10,7 +10,7 @@ module.exports = async (client) => {
         const applicationCommands = await getApplicationCommands(client, server);
 
         for(const localCommand of localCommands){
-            const {name, description, options} = localCommand;
+            const {name, description, options, cooldown} = localCommand;
 
             const existingCommand = await applicationCommands.cache.find(
                 (cmd) => cmd.name === name
@@ -26,7 +26,8 @@ module.exports = async (client) => {
                 if(areCommandsDifferent(existingCommand, localCommand)){
                     await applicationCommands.edit(existingCommand.id, {
                         description,
-                        options
+                        options,
+                        cooldown
                     });
 
                     console.log(`Edited command ${name}.`);
@@ -41,7 +42,8 @@ module.exports = async (client) => {
                 await applicationCommands.create({
                   name, 
                   description,
-                  options
+                  options,
+                  cooldown
                 })
 
                 console.log(`Registered command ${name}.`);

@@ -10,7 +10,12 @@ const contestantSchema = new Schema({
         required: true
     },
     itemsOwned: [{
-        itemName: String
+        itemName: String,
+        used: {
+            type: Boolean,
+            default: false
+        },
+        usedOn: String
     }],
     money: {
         type: Number,
@@ -18,10 +23,14 @@ const contestantSchema = new Schema({
     },
     submitted: {
         type: Boolean
-    }
+    },
+    cooldowns: [{
+        command: { type: String, required: true }, // Command name or ID
+        cooldownExpiration: { type: Date, required: false }, // Cooldown expiration timestamp
+    }],
 },
 {
-  collection: 'contestants',
+    collection: 'contestants',
 });
 
 module.exports = model('Contestant', contestantSchema);
