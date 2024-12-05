@@ -24,6 +24,9 @@ const contestantSchema = new Schema({
     submitted: {
         type: Boolean
     },
+    coach: {
+        type: Boolean
+    },
     cooldowns: [{
         command: { type: String, required: true }, // Command name or ID
         cooldownExpiration: { type: Date, required: false }, // Cooldown expiration timestamp

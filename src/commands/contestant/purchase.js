@@ -10,12 +10,7 @@ const stringSimilarity = require('string-similarity');
 
 const items = [
     'Mask', 'Scissors', 'Licensing Agreement', 'Phone a Friend', 'Flashlight', 'Coathanger',
-    'Amplifier', 'Muffler', 'Noise Cancellation Headphones', 'Loot', 'Wuuf\'s Wheel of Fortune',
-    'Musical Wand', 'Tech Wand', 'Wave Wand', 'Dragon Wand', 'Galaxy Wand', 'Life Wand', 'Animal Wand',
-    'Turnips', 'Barbie Mirror', 'Slingshot', 'Barbie Car', 'Javelin', 'Mace', 'Buttercup Nano', 'Courage Nano',
-    'Rigby Nano', 'Spit', 'Deathberry', 'Starclan\'s Blessing', 'Kunai', 'Knife', 'Coco Nano', 'Baddie Phone',
-    'Balloon', 'Moonpool Plunge', 'Bow', 'Sword', 'Eddy Nano', 'Cranberry Juice', 'Punch', 'Breakfast in Bed',
-    'Mug', 'Switch Up'
+    'Amplifier', 'Muffler', 'Noise Cancellation Headphones', 'Loot', 'Faulty Microphone', 'Record Label', 'Truth Telling Teeth', 'Mind Control', 'Love Potion', 'Journal 2'
 ];
 
 module.exports = {
@@ -117,7 +112,12 @@ module.exports = {
                     await contestant.save();
                     await shopItem.save();
 
-                    interaction.followUp(`Successfully purchased **${shopItem.name}**.`);
+                 if(shopItem.name == 'Loot'){
+interaction.followUp(`Successfully purchased **${shopItem.name}**. To use it, use /scavenge.`);
+} else{
+interaction.followUp(`Successfully purchased **${shopItem.name}**. To use it, use /useitem.`);
+}
+                     
 
                     const updatedShopItems = await ShopItem.find();
 
@@ -125,6 +125,7 @@ module.exports = {
                     const shopTargetChannel = client.channels.cache.get(config.shopChannelId);
                     const leaderboardTargetChannel = client.channels.cache.get(config.leaderboardChannelId);
 
+                    await updateShopMessage(client, shopTargetChannel, updatedShopItems);
                     await updateLeaderboardMessage(client, leaderboardTargetChannel);
                     await createContestantAnnouncement(client, interaction, shopItem, config.announcementChannelId);
                 } else {

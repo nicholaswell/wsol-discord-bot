@@ -45,9 +45,8 @@ module.exports = {
                 const shopItems = await Shop.find({ season });
 
                 const embed = new EmbedBuilder()
-                    .setColor(seasonColors[season])
+                    .setColor(config.color)
                     .setTitle(`Shop - Page ${season}`)
-                    .setImage(seasonImages[season]);
 
                 shopItems.forEach((item) => {
                     embed.addFields({ name: item.name, value: `$${item.price}\n${item.description}\n*Left Remaining: ${item.remaining}*\n\n`});

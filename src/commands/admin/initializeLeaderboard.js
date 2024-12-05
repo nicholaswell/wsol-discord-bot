@@ -1,12 +1,6 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const Contestant = require('../../models/Contestant');
-const Eliminated = require('../../models/Eliminated'); 
-<<<<<<< HEAD
 const config = require('../../../config.json');
-=======
-const config = require('../../../config.json')
-
->>>>>>> v2
 
 module.exports = {
     name: 'initializeleaderboard',
@@ -17,52 +11,38 @@ module.exports = {
     callback: async (client, interaction) => {
         try {
             const targetChannelId = config.leaderboardChannelId;
-
-            // Variable for the target channel
             const targetChannel = client.channels.cache.get(targetChannelId);
 
-            // Fetch all contestants from the database
-            const contestants = await Contestant.find();
+            // Fetch only coaches from the database (where coach: true)
+            const coaches = await Contestant.find({ coach: true });
 
-<<<<<<< HEAD
-            // Create an array to hold embeds
             const embeds = [];
-
-            // Create an initial embed for the leaderboard
-            let embed = new MessageEmbed()
-                .setColor([224,9,120])
-=======
-            // Create an embed for the leaderboard
-            const embed = new EmbedBuilder()
+            let embed = new EmbedBuilder()
                 .setColor(config.color)
->>>>>>> v2
                 .setTitle('Leaderboard')
-                .setDescription('Here are the current standings on the leaderboard:\n\n');
+                .setDescription('Here are the current standings on the leaderboard\n\n');
 
-            // Add each contestant's information to the embed
-            contestants.forEach((contestant, index) => {
-                embed.addFields({ name: contestant.name, value: `$${contestant.money}\n\n` });
-                // If we've reached 25 contestants or this is the last contestant
-                if ((index + 1) % 23 === 0 || index === contestants.length - 1) {
-                    // Push the current embed to the array
+            coaches.forEach((contestant, index) => {
+                embed.addFields({ name: contestant.name, value: `$${contestant.money}` });
+                if ((index + 1) % 25 === 0 || index === coaches.length - 1) {
                     embeds.push(embed);
-                    // Create a new embed for the next chunk of contestants
-                    embed = new MessageEmbed()
-                        .setColor([0, 255, 255])
-                        .setTitle('Leaderboard')
-                        .setDescription('Continuation of the leaderboard:\n\n');
+                    embed = new EmbedBuilder()
+                        .setColor(config.color);
                 }
             });
 
-            // Send each embed to the leaderboard channel
+            const messageIds = [];
             for (const embed of embeds) {
-                await targetChannel.send({ embeds: [embed] });
+                const message = await targetChannel.send({ embeds: [embed] });
+                messageIds.push(message.id);
             }
 
-            interaction.reply('Initialized the leaderboard.');
+            // Save the message IDs in the config or database
+            config.leaderboardMessageIds = messageIds; // Save appropriately
+            interaction.reply('Leaderboard initialized for coaches only.');
         } catch (error) {
-            console.error('Error in initializeleaderboard command:', error);
-            interaction.reply('An error occurred while processing the command.');
+            console.error('Error in initializeleaderboard:', error);
+            interaction.reply('An error occurred while initializing the leaderboard.');
         }
     },
 };

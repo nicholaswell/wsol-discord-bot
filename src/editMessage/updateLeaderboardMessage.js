@@ -1,48 +1,42 @@
 const { EmbedBuilder } = require('discord.js');
 const Contestant = require('../models/Contestant');
-const Eliminated = require('../models/Eliminated'); 
-const config = require('../../../config.json');
+const config = require('../../config.json');
 
 async function updateLeaderboard(client, targetChannel) {
     try {
-        // Fetch all contestants from the database
         const contestants = await Contestant.find();
 
-        // Fetch eliminated information
-        const eliminatedInfo = await Eliminated.findOne();
-
-        // Create an embed for the leaderboard
-        const embed = new EmbedBuilder()
+        const embeds = [];
+        let embed = new EmbedBuilder()
             .setColor(config.color)
             .setTitle('Leaderboard')
             .setDescription('Here are the current standings on the leaderboard:\n\n');
 
-        // Add each contestant's information to the embed
-        contestants.forEach((contestant) => {
-            embed.addFields({ name: contestant.name, value: `$${contestant.money}\n\n` });
+        contestants.forEach((contestant, index) => {
+            embed.addFields({ name: contestant.name, value: `$${contestant.money}` });
+            if ((index + 1) % 25 === 0 || index === contestants.length - 1) {
+                embeds.push(embed);
+                embed = new EmbedBuilder()
+                    .setColor(config.color)
+                    .setTitle('Leaderboard - Continued')
+                    .setDescription('Continuation of the leaderboard:\n\n');
+            }
         });
 
-        // Add eliminated information to the embed
-        if (eliminatedInfo) {
-            embed.addFields({ name: 'LOOT', value: `Items: ${eliminatedInfo.itemsOwned.join(', ')}\nMoney: $${eliminatedInfo.money}` });
-        }
+        const messageIds = config.leaderboardMessageIds; // Retrieve stored IDs
+        if (!messageIds) return;
 
-        // Collect the messages in the leaderboard channel
-        const messages = await targetChannel.messages.fetch();
+        for (let i = 0; i < messageIds.length; i++) {
+            const messageId = messageIds[i];
+            const embed = embeds[i];
 
-        // Find the original leaderboard message
-        const leaderboardMessage = messages.find(
-            (message) => message.author.id === client.user.id && message.embeds.length > 0
-        );
-
-        // If the leaderboard message exists, update it; otherwise, send a new one
-        if (leaderboardMessage) {
-            await leaderboardMessage.edit({ embeds: [embed] });
-        } else {
-            await targetChannel.send({ embeds: [embed] });
+            const message = await targetChannel.messages.fetch(messageId);
+            if (message) {
+                await message.edit({ embeds: [embed] });
+            }
         }
     } catch (error) {
-        console.error('Error in updateLeaderboard function:', error);
+        console.error('Error updating leaderboard:', error);
     }
 }
 

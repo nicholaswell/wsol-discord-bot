@@ -32,6 +32,22 @@ module.exports = {
             const donor = await Contestant.findOne({ id: interaction.user.id });
             const recipientContestant = await Contestant.findOne({ id: recipient.id });
 
+             // Check if the donor is a coach
+             const donorIsCoach = interaction.member.roles.cache.has(config.coachRoleId);
+
+             // Check if the recipient is a coach
+             const recipientIsCoach = interaction.guild.members.cache.get(recipient.id)?.roles.cache.has(config.coachRoleId);
+ 
+             if (!donorIsCoach) {
+                 interaction.reply('Only coaches can donate money to other coaches.');
+                 return;
+             }
+ 
+             if (!recipientIsCoach) {
+                 interaction.reply('You can only donate money to another coach.');
+                 return;
+             }
+
             if (!donor || !recipientContestant) {
                 interaction.reply('Donor or recipient not found in the database.');
                 return;

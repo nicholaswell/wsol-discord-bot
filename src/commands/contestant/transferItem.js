@@ -1,18 +1,12 @@
 const Contestant = require('../../models/Contestant');
 const { ApplicationCommandOptionType } = require('discord.js');
-const config = require('../../../config.json')
+const config = require('../../../config.json');
 const createContestantAnnouncement = require('../../createMessage/createDonateItemAnnouncement');
 const stringSimilarity = require('string-similarity');
 
 const items = [
     'Mask', 'Scissors', 'Licensing Agreement', 'Phone a Friend', 'Flashlight', 'Coathanger',
-    'Amplifier', 'Muffler', 'Noise Cancellation Headphones', 'Loot', 'Wuuf\'s Wheel of Fortune',
-    'Musical Wand', 'Tech Wand', 'Wave Wand', 'Dragon Wand', 'Galaxy Wand', 'Life Wand', 'Animal Wand',
-    'Turnips', 'Barbie Mirror', 'Slingshot', 'Barbie Car', 'Javelin', 'Mace', 'Buttercup Nano', 'Courage Nano',
-    'Rigby Nano', 'Spit', 'Deathberry', 'Starclan\'s Blessing', 'Kunai', 'Knife', 'Coco Nano', 'Baddie Phone',
-    'Balloon', 'Moonpool Plunge', 'Bow', 'Sword', 'Eddy Nano', 'Cranberry Juice', 'Punch', 'Breakfast in Bed',
-    'Mug', 'Switch Up', 'Theme Wheel', 'Random Sabotage', 'Double or Nothing', '10 Free Spins', 'Diamond',
-    'Unlucky Penny', 'Another Drink', 'Horse Advantage', 'Dueling Guns', 'Empty Box'
+    'Amplifier', 'Muffler', 'Noise Cancellation Headphones', 'Loot', 'Faulty Microphone', 'Record Label', 'Truth Telling Teeth', 'Mind Control', 'Love Potion', 'Journal 2'
 ];
 
 module.exports = {
@@ -31,7 +25,6 @@ module.exports = {
             type: ApplicationCommandOptionType.String,
             required: true,
         }
-
     ],
 
     callback: async (client, interaction) => {
@@ -81,11 +74,15 @@ module.exports = {
 
                 interaction.reply(`Successfully donated ${itemName} to ${recipientContestant.name}.`);
 
-                // Calls the updateShopMessage function to update the message in the shop.
-                await createContestantAnnouncement(client, interaction.user.id, recipient.id, itemName, config.announcementChannelId);
+                // Only send an announcement if the item is not "Loot"
+                if (itemName !== 'Loot') {
+                    await createContestantAnnouncement(client, interaction.user.id, recipient.id, itemName, config.announcementChannelId);
+                }
+
             } else {
-                interaction.reply(`You do not own ${itemName} to donate.`);
+                interaction.reply(`The donor does not own the item "${itemName}".`);
             }
+
         } catch (error) {
             console.error('Error in donateitem command:', error);
             interaction.reply('An error occurred while processing the command.');

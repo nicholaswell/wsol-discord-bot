@@ -8,7 +8,7 @@ const items = [
     'Sword', 'Mace', 'Punch', 'Spit', 'Breakfast in Bed', 'Cranberry Juice',
     'Mug', 'Theme Wheel', 'Random Sabotage', 'Kneecap Breaker', 'Double or Nothing',
     '10 Free Spins', 'Diamond', 'Unlucky Penny', 'Another Drink', 'Horse Advantage',
-    'Dueling Guns', 'Empty Box', 'Item Voucher'
+    'Dueling Guns', 'Empty Box', 'Item Voucher', 'Eddy Nano', ' Record Label'
 ];
 const stringSimilarity = require('string-similarity');
 

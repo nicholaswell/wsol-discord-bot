@@ -55,7 +55,8 @@ module.exports = {
             const outcome = Math.random();
 
             let response;
-
+            
+    
             if (outcome < 0.2 && eliminatedData.itemsOwned.length > 0) { // 20% chance of getting item from loot
                 const randomIndex = Math.floor(Math.random() * eliminatedData.itemsOwned.length);
                 const randomItem = eliminatedData.itemsOwned[randomIndex];

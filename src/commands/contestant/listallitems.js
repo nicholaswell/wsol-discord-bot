@@ -22,9 +22,8 @@ module.exports = {
                 if (contestant.itemsOwned.length > 0) {
                     message += `**${contestant.name}:**\n`;
                     contestant.itemsOwned.forEach(item => {
-                        if (!item.used) {
+                
                             message += `- ${item.itemName}\n`;
-                        }
                     });
                 }
             });

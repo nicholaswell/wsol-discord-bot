@@ -133,12 +133,8 @@ async function processRankings(client) {
         // Loop through names starting from currentIndex
             const name = names[i];
         
-      
-<<<<<<< HEAD
             const contestantImageFileName = `${name}.png`; // Assuming the image file name matches the contestant's name
-=======
-            const contestantImageFileName = `${name}.png`; 
->>>>>>> v2
+
             const contestantImageFilePath = path.join(__dirname, '../../images/contestants', contestantImageFileName);
             const borderImagePath = path.join(__dirname, '../../images/borders/secondaryborder.png');
         
